@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif; /* Changed font to Verdana */
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        li {
+            border-bottom: 1px solid #ccc; /* Added border-bottom for separation between exercises */
+        }
+
+        input[type="checkbox"] {
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            margin-right: 5px;
+        }
+
+        button {
+            padding: 7px;
+            background-color: #4285f4; /* Changed button color to Google's blue */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+
+        .exercise {
+            font-weight: bold; /* Bolded exercise names */
+            color: #4285f4; /* Changed exercise color to Google's blue */
+        }
+
+        .sets {
+            margin-left: 30px;
+            padding-left: 10px;
+            border-left: 2px solid #4285f4; /* Changed sets border color to Google's blue */
+        }
+
+        .rpe {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exercises</h1>
+    <ul>
+        {% for exercise in exercises %}
+            <li>
+                <input type="checkbox" name="done" {% if exercise['done'] %} checked {%endif%} disabled onchange="this.form.submit()">
+                <span {%if exercise['done'] %} style="text-decoration: line-through" {%endif%}>{{ exercise['movement'] }}</span>
+                <a href="{{ url_for('add_rep', index=loop.index0) }}">Reps</a>
+                <a href="{{ url_for('add_set', index=loop.index0) }}">Set</a>
+                <a href="{{ url_for('add_rpe', index=loop.index0) }}">RPE</a>
+                <a href="{{ url_for('check', index=loop.index0) }}">Check</a>
+                <a href="{{ url_for('edit', index=loop.index0) }}">Edit</a>
+                <a href="{{ url_for('delete', index=loop.index0) }}">Delete</a>
+                <ul>
+                    <li>Rep Range: {{ exercise["rep-range"] }}</li>
+                    <li>Sets:</li>
+                    <ul>
+                        {% for key, value in exercise["sets"].items() %}
+                            <li>Set {{ key }}: {{ value }}</li>
+                        {% endfor %}
+                    </ul>
+                    <li>RPE: {{ exercise["RPE"] }}</li>
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+    <form action="{{ url_for('add_exercise') }}" method="post">
+        <input type="text" name="exercise">
+        <button type="submit">Add Exercise</button>
+    </form>
+</body>
+</html>
